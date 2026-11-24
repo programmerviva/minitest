@@ -1,13 +1,14 @@
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
-// Sign JWT token with 7-day expiration
+// Sign JWT token with configurable expiration (default: 7d)
 export function signToken(userId) {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error('JWT_SECRET is not configured');
   }
-  return jwt.sign({ id: userId }, secret, { expiresIn: '7d' });
+  const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+  return jwt.sign({ id: userId }, secret, { expiresIn });
 }
 
 // Extract and verify userId from Authorization: Bearer <token> header
